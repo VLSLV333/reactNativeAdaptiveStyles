@@ -1,6 +1,14 @@
 import { useState } from "react";
 
-import { TextInput, View, StyleSheet, Alert } from "react-native";
+import {
+  TextInput,
+  View,
+  StyleSheet,
+  Alert,
+  useWindowDimensions,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
 
 import Title from "../components/UI/Title";
 
@@ -41,34 +49,47 @@ export default function StartGameScreen({ stat, showGameOver }) {
     setInputValue("");
   };
 
+  const { width, height, fontScale } = useWindowDimensions();
+
+  const rootContainerMarginTop = height < 380 ? 30 : 120;
+
   return (
-    <View style={styles.rootContainer}>
-      <Title txt={"Guess number"} />
-      <Card>
-        <InstructionText txt={'Enter a number'}/>
-        <TextInput
-          style={styles.numberInput}
-          maxLength={2}
-          keyboardType="number-pad"
-          autoCapitalize="none"
-          autoCorrect={false}
-          value={inputValue}
-          onChangeText={inputHandler}
-        />
-        <View style={styles.btnContainer}>
-          <PrimaryButton btnText={"Reset"} onPress={resetHandler} />
-          <PrimaryButton btnText={"Confirm"} onPress={confirmHandler} />
+    <ScrollView style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="position">
+        <View
+          style={[styles.rootContainer, { marginTop: rootContainerMarginTop }]}
+        >
+          <Title txt={"Guess number"} />
+          <Card>
+            <InstructionText txt={"Enter a number"} />
+            <TextInput
+              style={styles.numberInput}
+              maxLength={2}
+              keyboardType="number-pad"
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={inputValue}
+              onChangeText={inputHandler}
+            />
+            <View style={styles.btnContainer}>
+              <PrimaryButton btnText={"Reset"} onPress={resetHandler} />
+              <PrimaryButton btnText={"Confirm"} onPress={confirmHandler} />
+            </View>
+          </Card>
         </View>
-      </Card>
-    </View>
+      </KeyboardAvoidingView>
+    </ScrollView>
   );
 }
 
+// const deviceHeight = Dimensions.get('window').height
+
 const styles = StyleSheet.create({
   rootContainer: {
-    marginTop: 150,
+    // marginTop: deviceHeight < 380 ? 30 : 120,
     flex: 1,
     marginHorizontal: 24,
+    alignItems: "center",
   },
   numberInput: {
     height: 50,

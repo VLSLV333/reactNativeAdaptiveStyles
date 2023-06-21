@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 
-import { View, StyleSheet, Alert, Text, FlatList } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Alert,
+  FlatList,
+  useWindowDimensions,
+} from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -31,6 +37,8 @@ export default function GameScreen({ choosedNum, won, setGameRounds, rounds }) {
   const initialGuess = generateRandomBetween(1, 100, choosedNum);
 
   const [currentGuess, setCurrentGuess] = useState(initialGuess);
+
+  const { height, width } = useWindowDimensions();
 
   useEffect(() => {
     minBoundary = 1;
@@ -69,8 +77,8 @@ export default function GameScreen({ choosedNum, won, setGameRounds, rounds }) {
     setCurrentGuess(newRandonNum);
   }
 
-  return (
-    <View style={styles.screen}>
+  let content = (
+    <>
       <Title txt={"Oponents Guess"} />
       <NumberContainer txt={initialGuess} />
       <View style={styles.directionContainer}>
@@ -84,11 +92,45 @@ export default function GameScreen({ choosedNum, won, setGameRounds, rounds }) {
           </PrimaryButton>
         </View>
       </View>
+    </>
+  );
+
+  if (width >= 500) {
+    content = (
+      <>
+        <Title txt={"Oponents Guess"} />
+        <View style={styles.directionContainer}>
+          <View
+            style={[
+              styles.btnContainer,
+              width >= 500 ? { alignItems: "center", paddingTop: 15 } : {},
+            ]}
+          >
+            <PrimaryButton onPress={() => nextGuessHandler("lower")}>
+              <Ionicons name="md-remove" size={24} color="white" />
+            </PrimaryButton>
+            <NumberContainer txt={initialGuess} />
+            <PrimaryButton onPress={() => nextGuessHandler("higher")}>
+              <Ionicons name="md-add" size={24} color="white" />
+            </PrimaryButton>
+          </View>
+        </View>
+      </>
+    );
+  }
+
+  return (
+    <View style={styles.screen}>
+      {content}
       <FlatList
+        style={{ width: "100%" }}
         data={rounds}
         keyExtractor={(item) => item}
         renderItem={(itemData) => (
-            <GuessLogItem roundNumber={rounds.length - itemData.index} guess={itemData.item}/>
+          <GuessLogItem
+            roundNumber={rounds.length - itemData.index}
+            guess={itemData.item}
+          />
         )}
       />
     </View>
@@ -99,6 +141,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     padding: 24,
+    alignItems: "center",
   },
   btnContainer: {
     flexDirection: "row",

@@ -1,14 +1,10 @@
-// import { useEffect } from "react";
-
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, useWindowDimensions, Dimensions } from "react-native";
 
 import Colors from "../../constants/colors";
 
 export default function NumberContainer({ txt }) {
-  // let GuessedNum = txt;
-  // useEffect(() => {
-  //   GuessedNum = txt;
-  // }, [txt]);
+  // const {height, width, scale, fontScale} = useWindowDimensions();
+  
   return (
     <View style={styles.container}>
       <Text style={styles.numberText}>{txt}</Text>
@@ -16,19 +12,21 @@ export default function NumberContainer({ txt }) {
   );
 }
 
+const width = Dimensions.get('window').width;
+
 const styles = StyleSheet.create({
   container: {
     borderWidth: 4,
     borderColor: Colors.yellowAccent,
-    padding: 24,
-    margin: 24,
+    padding: width < 380 ? 12 : 24,
+    margin: width < 380 ? 12 : 24,
     borderRadius: 7,
     alignContent: "center",
     justifyContent: "center",
   },
   numberText: {
     color: Colors.yellowAccent,
-    fontSize: 36,
+    fontSize: width < 380 ? 28 : 36,
     // fontWeight: "bold",
     textAlign: "center",
     fontFamily: 'open-sans-bold'
